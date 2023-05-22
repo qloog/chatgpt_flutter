@@ -93,7 +93,7 @@ class ChatScreen extends HookConsumerWidget {
 
       ref.read(messageProvider.notifier).addMessage(message);
     } catch (err) {
-      print(err);
+      logger.e("requestChatGPT error: $err", err);
     } finally {
       // 启用ui状态
       ref.read(chatUiProvider.notifier).setRequestLoading(false);
