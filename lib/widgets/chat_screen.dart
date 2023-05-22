@@ -1,5 +1,5 @@
 import 'package:chatgpt/models/message.dart';
-import 'package:chatgpt/services/injection.dart';
+import 'package:chatgpt/injection.dart';
 import 'package:chatgpt/states/message_state.dart';
 import 'package:chatgpt/widgets/message_item.dart';
 import 'package:flutter/material.dart';

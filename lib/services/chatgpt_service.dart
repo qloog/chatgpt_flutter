@@ -1,9 +1,10 @@
 import 'package:openai_api/openai_api.dart';
+import 'package:chatgpt/env.dart';
 
 class ChatGPTService {
   final client = OpenaiClient(
       config: OpenaiConfig(
-        apiKey: "",
+        apiKey: Env.apiKey,
       ),
   );
 
