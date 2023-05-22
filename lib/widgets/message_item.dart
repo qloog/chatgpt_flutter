@@ -15,7 +15,7 @@ class MessageItem extends StatelessWidget {
       children: [
         CircleAvatar(
           backgroundColor: message.isUser ? Colors.blue : Colors.grey,
-          child:  Text(
+          child: Text(
             message.isUser ? 'A' : 'GPT',
           ),
         ),
@@ -24,7 +24,7 @@ class MessageItem extends StatelessWidget {
         ),
         Flexible(
           child: Container(
-            margin: const EdgeInsets.only(top: 5),
+            margin: const EdgeInsets.only(top: 12),
             child: Text(message.content),
           ),
         ),

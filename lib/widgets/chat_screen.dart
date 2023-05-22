@@ -1,5 +1,6 @@
 import 'package:chatgpt/models/message.dart';
 import 'package:chatgpt/injection.dart';
+import 'package:chatgpt/states/chat_ui_state.dart';
 import 'package:chatgpt/states/message_state.dart';
 import 'package:chatgpt/widgets/message_item.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,8 @@ class ChatScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final messages = ref.watch(messageProvider); // 获取数据
+    final chatUIState = ref.watch(chatUiProvider); // 获取ui状态
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Chat'),
@@ -37,7 +40,7 @@ class ChatScreen extends HookConsumerWidget {
                   return MessageItem(message: messages[index]);
                 },
                 itemCount: messages.length,
-                separatorBuilder:(context, index) => const Divider(
+                separatorBuilder: (context, index) => const Divider(
                   height: 16,
                 ),
               ),
@@ -45,6 +48,7 @@ class ChatScreen extends HookConsumerWidget {
 
             // 输入框
             TextField(
+              enabled: !chatUIState.requestLoading,
               controller: _textController,
               decoration: InputDecoration(
                 hintText: "Type a message",
@@ -68,7 +72,8 @@ class ChatScreen extends HookConsumerWidget {
 
   //  增加WidgetRef
   _sendMessage(WidgetRef ref, String content) {
-    final message = Message(content: content, isUser: true, timestamp: DateTime.now());
+    final message =
+        Message(content: content, isUser: true, timestamp: DateTime.now());
     // messages.add(message);
     ref.read(messageProvider.notifier).addMessage(message); // 添加消息
     _textController.clear();
@@ -78,9 +83,15 @@ class ChatScreen extends HookConsumerWidget {
   }
 
   _requestChatGPT(WidgetRef ref, String content) async {
+    // 启用ui状态
+    ref.read(chatUiProvider.notifier).setRequestLoading(true);
     final res = await chatgpt.sendChat(content);
+    // 禁用ui状态
+    ref.read(chatUiProvider.notifier).setRequestLoading(false);
+
     final text = res.choices.first.message?.content ?? "";
-    final message = Message(content: text, isUser: false, timestamp: DateTime.now());
+    final message =
+        Message(content: text, isUser: false, timestamp: DateTime.now());
 
     ref.read(messageProvider.notifier).addMessage(message);
   }
