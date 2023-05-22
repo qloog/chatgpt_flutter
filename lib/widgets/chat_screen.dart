@@ -78,21 +78,25 @@ class ChatScreen extends HookConsumerWidget {
     ref.read(messageProvider.notifier).addMessage(message); // 添加消息
     _textController.clear();
 
-    // 请求chatgpt
     _requestChatGPT(ref, content);
   }
 
+  // 请求chatgpt
   _requestChatGPT(WidgetRef ref, String content) async {
-    // 启用ui状态
-    ref.read(chatUiProvider.notifier).setRequestLoading(true);
-    final res = await chatgpt.sendChat(content);
     // 禁用ui状态
-    ref.read(chatUiProvider.notifier).setRequestLoading(false);
+    ref.read(chatUiProvider.notifier).setRequestLoading(true);
+    try {
+      final res = await chatgpt.sendChat(content);
+      final text = res.choices.first.message?.content ?? "";
+      final message =
+          Message(content: text, isUser: false, timestamp: DateTime.now());
 
-    final text = res.choices.first.message?.content ?? "";
-    final message =
-        Message(content: text, isUser: false, timestamp: DateTime.now());
-
-    ref.read(messageProvider.notifier).addMessage(message);
+      ref.read(messageProvider.notifier).addMessage(message);
+    } catch (err) {
+      print(err);
+    } finally {
+      // 启用ui状态
+      ref.read(chatUiProvider.notifier).setRequestLoading(false);
+    }
   }
 }
