@@ -1,3 +1,4 @@
+import 'package:chatgpt/widgets/message_content.dart';
 import 'package:flutter/material.dart';
 
 import '../models/message.dart';
@@ -24,8 +25,10 @@ class MessageItem extends StatelessWidget {
         ),
         Flexible(
           child: Container(
-            margin: const EdgeInsets.only(top: 12),
-            child: Text(message.content),
+            margin: const EdgeInsets.only(right: 48),
+            child: MessageContentWidget(
+              message: message,
+            ),
           ),
         ),
       ],
