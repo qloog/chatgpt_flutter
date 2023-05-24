@@ -2,10 +2,10 @@ import 'package:chatgpt/models/message.dart';
 import 'package:chatgpt/injection.dart';
 import 'package:chatgpt/states/chat_ui_state.dart';
 import 'package:chatgpt/states/message_state.dart';
-import 'package:chatgpt/widgets/message_item.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+import 'message_list.dart';
 
 class ChatScreen extends HookConsumerWidget {
   ChatScreen({super.key});
@@ -141,36 +141,5 @@ class ChatScreen extends HookConsumerWidget {
       // 启用ui状态
       ref.read(chatUiProvider.notifier).setRequestLoading(false);
     }
-  }
-}
-
-class ChatMessageList extends HookConsumerWidget {
-  const ChatMessageList({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final messages = ref.watch(messageProvider);
-    final listController = useScrollController();
-
-    ref.listen(messageProvider, (previous, next) {
-      Future.delayed(const Duration(milliseconds: 50), () {
-        listController.jumpTo(
-          listController.position.maxScrollExtent,
-        );
-      });
-    });
-
-    return ListView.separated(
-      controller: listController,
-      itemBuilder: (context, index) {
-        return MessageItem(message: messages[index]);
-      },
-      itemCount: messages.length,
-      separatorBuilder: (context, index) => const Divider(
-        height: 16,
-      ),
-    );
   }
 }
