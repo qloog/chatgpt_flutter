@@ -10,20 +10,33 @@ class ChatScreen extends HookConsumerWidget {
   ChatScreen({super.key});
 
   final List<Message> messages = [
-    Message(content: "Hello ya", isUser: true, timestamp: DateTime.now()),
-    Message(content: "How are you?", isUser: false, timestamp: DateTime.now()),
     Message(
+        id: uuid.v4(),
+        content: "Hello ya",
+        isUser: true,
+        timestamp: DateTime.now()),
+    Message(
+        id: uuid.v4(),
+        content: "How are you?",
+        isUser: false,
+        timestamp: DateTime.now()),
+    Message(
+        id: uuid.v4(),
         content: "Fine,Thank you. And you?",
         isUser: true,
         timestamp: DateTime.now()),
-    Message(content: "I am fine.", isUser: false, timestamp: DateTime.now()),
+    Message(
+        id: uuid.v4(),
+        content: "I am fine.",
+        isUser: false,
+        timestamp: DateTime.now()),
   ];
 
   final _textController = TextEditingController();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final messages = ref.watch(messageProvider); // 获取数据
+    // final messages = ref.watch(messageProvider); // 获取数据
     final chatUIState = ref.watch(chatUiProvider); // 获取ui状态
 
     return Scaffold(
@@ -34,16 +47,9 @@ class ChatScreen extends HookConsumerWidget {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            Expanded(
-              child: ListView.separated(
-                itemBuilder: (context, index) {
-                  return MessageItem(message: messages[index]);
-                },
-                itemCount: messages.length,
-                separatorBuilder: (context, index) => const Divider(
-                  height: 16,
-                ),
-              ),
+            const Expanded(
+              // 聊天消息列表
+              child: ChatMessageList(),
             ),
 
             // 输入框
@@ -72,13 +78,17 @@ class ChatScreen extends HookConsumerWidget {
 
   //  增加WidgetRef
   _sendMessage(WidgetRef ref, String content) {
-    final message =
-        Message(content: content, isUser: true, timestamp: DateTime.now());
+    final message = Message(
+      id: uuid.v4(),
+      content: content,
+      isUser: true,
+      timestamp: DateTime.now(),
+    );
     // messages.add(message);
     ref.read(messageProvider.notifier).addMessage(message); // 添加消息
     _textController.clear();
 
-    _requestChatGPT(ref, content);
+    _requestStreamChatGPT(ref, content);
   }
 
   // 请求chatgpt
@@ -86,10 +96,15 @@ class ChatScreen extends HookConsumerWidget {
     // 禁用ui状态
     ref.read(chatUiProvider.notifier).setRequestLoading(true);
     try {
+      final id = uuid.v4();
       final res = await chatgpt.sendChat(content);
       final text = res.choices.first.message?.content ?? "";
-      final message =
-          Message(content: text, isUser: false, timestamp: DateTime.now());
+      final message = Message(
+        id: id,
+        content: text,
+        isUser: false,
+        timestamp: DateTime.now(),
+      );
 
       ref.read(messageProvider.notifier).addMessage(message);
     } catch (err) {
@@ -98,5 +113,53 @@ class ChatScreen extends HookConsumerWidget {
       // 启用ui状态
       ref.read(chatUiProvider.notifier).setRequestLoading(false);
     }
+  }
+
+  // 请求chatgpt
+  _requestStreamChatGPT(WidgetRef ref, String content) async {
+    // 禁用ui状态
+    ref.read(chatUiProvider.notifier).setRequestLoading(true);
+    try {
+      final id = uuid.v4();
+      await chatgpt.streamChat(
+        content,
+        onSuccess: (text) {
+          final message = Message(
+            id: id,
+            content: text,
+            isUser: false,
+            timestamp: DateTime.now(),
+          );
+
+          ref.read(messageProvider.notifier).upsertMessage(message);
+        },
+      );
+    } catch (err) {
+      logger.e("requestStreamChatGPT error: $err", err);
+    } finally {
+      // 启用ui状态
+      ref.read(chatUiProvider.notifier).setRequestLoading(false);
+    }
+  }
+}
+
+class ChatMessageList extends HookConsumerWidget {
+  const ChatMessageList({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final messages = ref.watch(messageProvider);
+
+    return ListView.separated(
+      itemBuilder: (context, index) {
+        return MessageItem(message: messages[index]);
+      },
+      itemCount: messages.length,
+      separatorBuilder: (context, index) => const Divider(
+        height: 16,
+      ),
+    );
   }
 }
