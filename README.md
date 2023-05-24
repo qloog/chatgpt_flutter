@@ -20,5 +20,17 @@ samples, guidance on mobile development, and a full API reference.
 生成 env.g.dart:
 
 ```bash
+# --delete-conflicting-outputs 可选，会在生成代码冲突的时候，删除原来的代码，重新生成
 flutter pub run build_runner build --delete-conflicting-outputs
+```
+
+配置 freezed
+
+```bash
+flutter pub add freezed_annotation
+flutter pub add --dev build_runner
+flutter pub add --dev freezed
+# if using freezed to generate fromJson/toJson, also add:
+flutter pub add json_annotation
+flutter pub add --dev json_serializable
 ```
