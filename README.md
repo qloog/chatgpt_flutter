@@ -17,14 +17,16 @@ samples, guidance on mobile development, and a full API reference.
 
 ## Step
 
-生成 env.g.dart:
+生成代码:
 
 ```bash
 # --delete-conflicting-outputs 可选，会在生成代码冲突的时候，删除原来的代码，重新生成
 flutter pub run build_runner build --delete-conflicting-outputs
 ```
 
-配置 freezed
+> 生成的代码基本是以 `.g.dart` 结尾的
+
+安装 freezed
 
 ```bash
 flutter pub add freezed_annotation
@@ -34,3 +36,12 @@ flutter pub add --dev freezed
 flutter pub add json_annotation
 flutter pub add --dev json_serializable
 ```
+
+安装 SQLite 库
+
+```bash
+flutter pub add floor
+flutter pub add --dev floor_generator
+```
+
+> floor 和 freezed 不能够兼容

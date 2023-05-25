@@ -12,7 +12,9 @@ class ChatUiStateProvider extends StateNotifier<ChatUiState> {
   ChatUiStateProvider() : super(ChatUiState());
 
   void setRequestLoading(bool requestLoading) {
-    state = ChatUiState(requestLoading: requestLoading);
+    state = ChatUiState(
+      requestLoading: requestLoading,
+    );
   }
 }
 

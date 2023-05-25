@@ -1,11 +1,17 @@
-import 'package:chatgpt/widgets/chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:chatgpt/widgets/chat_screen.dart';
+import 'package:chatgpt/data/database.dart';
 
-void main() {
+import 'injection.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  db = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
+
   runApp(
     const ProviderScope(
-        child: MyApp(),
+      child: MyApp(),
     ),
   );
 }
@@ -17,7 +23,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'ChatGPT',
       theme: ThemeData(
         // This is the theme of your application.
         //
