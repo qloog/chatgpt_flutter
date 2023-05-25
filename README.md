@@ -45,3 +45,12 @@ flutter pub add --dev floor_generator
 ```
 
 > floor 和 freezed 不能够兼容
+
+添加 riverpod 代码生成
+
+```bash
+flutter pub add --dev custom_lint
+flutter pub add --dev riverpod_lint
+flutter pub add riverpod_annotation
+flutter pub add --dev riverpod_generator
+```

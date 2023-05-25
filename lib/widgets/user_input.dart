@@ -8,6 +8,9 @@ import 'package:chatgpt/injection.dart';
 import 'package:chatgpt/models/message.dart';
 import 'package:chatgpt/states/message_state.dart';
 
+import '../models/session.dart';
+import '../states/session_state.dart';
+
 class UserInputWidget extends HookConsumerWidget {
   const UserInputWidget({super.key});
 
@@ -36,19 +39,46 @@ class UserInputWidget extends HookConsumerWidget {
   }
 
   //  增加WidgetRef
-  _sendMessage(WidgetRef ref, TextEditingController controller) {
+  _sendMessage(WidgetRef ref, TextEditingController controller) async {
     final content = controller.text;
-    final message = Message(
-      id: uuid.v4(),
-      content: content,
-      isUser: true,
-      timestamp: DateTime.now(),
-    );
-    // messages.add(message);
-    ref.read(messageProvider.notifier).upsertMessage(message); // 添加消息
+    Message message = _createMessage(content);
+
+    var active = ref.watch(activeSessionProvider);
+    var sessionId = active?.id ?? 0;
+    if (sessionId <= 0) {
+      active = Session(title: content);
+      // final id = await db.sessionDao.upsertSession(active);
+      active = await ref
+          .read(sessionStateNotifierProvider.notifier)
+          .upsertSession(active);
+      sessionId = active.id!;
+      ref
+          .read(sessionStateNotifierProvider.notifier)
+          .setActiveSession(active.copyWith(id: sessionId));
+    }
+
+    ref.read(messageProvider.notifier).upsertMessage(
+          message.copyWith(sessionId: sessionId),
+        ); // 添加消息
     controller.clear();
 
-    _requestStreamChatGPT(ref, content);
+    _requestStreamChatGPT(ref, content, sessionId);
+  }
+
+  Message _createMessage(
+    String content, {
+    String? id,
+    bool isUser = true,
+    int? sessionId,
+  }) {
+    final message = Message(
+      id: id ?? uuid.v4(),
+      content: content,
+      isUser: isUser,
+      timestamp: DateTime.now(),
+      sessionId: sessionId ?? 0,
+    );
+    return message;
   }
 
   // 请求chatgpt
@@ -59,12 +89,7 @@ class UserInputWidget extends HookConsumerWidget {
       final id = uuid.v4();
       final res = await chatgpt.sendChat(content);
       final text = res.choices.first.message?.content ?? "";
-      final message = Message(
-        id: id,
-        content: text,
-        isUser: false,
-        timestamp: DateTime.now(),
-      );
+      final message = _createMessage(text, id: id, isUser: false, sessionId: 0);
 
       ref.read(messageProvider.notifier).addMessage(message);
     } catch (err) {
@@ -76,7 +101,7 @@ class UserInputWidget extends HookConsumerWidget {
   }
 
   // 请求chatgpt
-  _requestStreamChatGPT(WidgetRef ref, String content) async {
+  _requestStreamChatGPT(WidgetRef ref, String content, int? sessionId) async {
     // 禁用ui状态
     ref.read(chatUiProvider.notifier).setRequestLoading(true);
     try {
@@ -84,12 +109,8 @@ class UserInputWidget extends HookConsumerWidget {
       await chatgpt.streamChat(
         content,
         onSuccess: (text) {
-          final message = Message(
-            id: id,
-            content: text,
-            isUser: false,
-            timestamp: DateTime.now(),
-          );
+          final message =
+              _createMessage(text, id: id, isUser: false, sessionId: sessionId);
 
           ref.read(messageProvider.notifier).upsertMessage(message);
         },
