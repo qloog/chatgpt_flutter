@@ -2,7 +2,7 @@ import 'package:chatgpt/models/message.dart';
 import 'package:chatgpt/injection.dart';
 import 'package:chatgpt/states/chat_ui_state.dart';
 import 'package:chatgpt/states/message_state.dart';
-import 'package:chatgpt/widgets/user_input.dart';
+import 'package:chatgpt/widgets/chat_input.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';

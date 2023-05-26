@@ -106,8 +106,9 @@ class UserInputWidget extends HookConsumerWidget {
     ref.read(chatUiProvider.notifier).setRequestLoading(true);
     try {
       final id = uuid.v4();
+      final messages = ref.watch(activeSessionMessagesProvider);
       await chatgpt.streamChat(
-        content,
+        messages,
         onSuccess: (text) {
           final message =
               _createMessage(text, id: id, isUser: false, sessionId: sessionId);
