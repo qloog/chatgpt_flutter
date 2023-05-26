@@ -24,6 +24,7 @@ class ChatGPTService {
   Future streamChat(
     List<Message> messages, {
     Function(String text)? onSuccess,
+    Model model = Model.gpt3_5Turbo,
   }) async {
     final request = ChatCompletionRequest(
       model: Model.gpt3_5Turbo,

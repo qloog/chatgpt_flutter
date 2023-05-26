@@ -1,3 +1,4 @@
+import 'package:chatgpt/widgets/chat_gpt_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -16,11 +17,11 @@ class UserInputWidget extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final chatUIState = ref.watch(chatUiProvider);
+    final uiState = ref.watch(chatUiProvider);
     final controller = useTextEditingController();
 
     return TextField(
-      enabled: !chatUIState.requestLoading,
+      enabled: !uiState.requestLoading,
       controller: controller,
       decoration: InputDecoration(
         hintText: "Type a message",
@@ -42,11 +43,12 @@ class UserInputWidget extends HookConsumerWidget {
   _sendMessage(WidgetRef ref, TextEditingController controller) async {
     final content = controller.text;
     Message message = _createMessage(content);
-
+    final uiState = ref.watch(chatUiProvider);
     var active = ref.watch(activeSessionProvider);
+
     var sessionId = active?.id ?? 0;
     if (sessionId <= 0) {
-      active = Session(title: content);
+      active = Session(title: content, model: uiState.model.value);
       // final id = await db.sessionDao.upsertSession(active);
       active = await ref
           .read(sessionStateNotifierProvider.notifier)
@@ -102,13 +104,20 @@ class UserInputWidget extends HookConsumerWidget {
 
   // 请求chatgpt
   _requestStreamChatGPT(WidgetRef ref, String content, int? sessionId) async {
+    final uiState = ref.watch(chatUiProvider);
     // 禁用ui状态
     ref.read(chatUiProvider.notifier).setRequestLoading(true);
+    final messages = ref.watch(activeSessionMessagesProvider);
+    final activeSession = ref.watch(activeSessionProvider);
+
+    print("========");
+    print(activeSession?.model.toModel() ?? uiState.model);
+
     try {
       final id = uuid.v4();
-      final messages = ref.watch(activeSessionMessagesProvider);
       await chatgpt.streamChat(
         messages,
+        model: activeSession?.model.toModel() ?? uiState.model,
         onSuccess: (text) {
           final message =
               _createMessage(text, id: id, isUser: false, sessionId: sessionId);

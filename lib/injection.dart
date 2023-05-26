@@ -11,3 +11,7 @@ final logger = Logger(level: kDebugMode ? Level.verbose : Level.info);
 const uuid = Uuid();
 
 late AppDatabase db;
+
+setupDatabase() async {
+  db = await initDatabase();
+}

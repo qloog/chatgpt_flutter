@@ -2,6 +2,8 @@ import 'package:chatgpt/models/message.dart';
 import 'package:chatgpt/injection.dart';
 import 'package:chatgpt/states/chat_ui_state.dart';
 import 'package:chatgpt/states/message_state.dart';
+import 'package:chatgpt/states/session_state.dart';
+import 'package:chatgpt/widgets/chat_gpt_model.dart';
 import 'package:chatgpt/widgets/chat_input.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -14,6 +16,8 @@ class ChatScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final activeSession = ref.watch(activeSessionProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Chat'),
@@ -23,20 +27,34 @@ class ChatScreen extends HookConsumerWidget {
               GoRouter.of(context).push('/history');
             },
             icon: const Icon(Icons.history),
+          ),
+          IconButton(
+            onPressed: () {
+              ref
+                  .read(sessionStateNotifierProvider.notifier)
+                  .setActiveSession(null);
+            },
+            icon: const Icon(Icons.add),
           )
         ],
       ),
-      body: const Padding(
-        padding: EdgeInsets.all(8.0),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            Expanded(
+            GptModelWidget(
+              active: activeSession?.model.toModel(),
+              onModelChanged: (model) {
+                ref.read(chatUiProvider.notifier).model = model;
+              },
+            ),
+            const Expanded(
               // 聊天消息列表
               child: ChatMessageList(),
             ),
 
             // 输入框
-            UserInputWidget(),
+            const UserInputWidget(),
           ],
         ),
       ),
