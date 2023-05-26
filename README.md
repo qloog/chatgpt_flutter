@@ -54,3 +54,22 @@ flutter pub add --dev riverpod_lint
 flutter pub add riverpod_annotation
 flutter pub add --dev riverpod_generator
 ```
+
+添加 router
+
+```bash
+flutter pub add go_router
+```
+
+
+添加 tiktoken 来计算token
+
+```bash
+flutter pub add tiktoken
+```
+
+添加 collection
+
+```bash
+flutter pub add collection
+```
