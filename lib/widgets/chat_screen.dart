@@ -54,7 +54,7 @@ class ChatScreen extends HookConsumerWidget {
             ),
 
             // 输入框
-            const UserInputWidget(),
+            const ChatInputWidget(),
           ],
         ),
       ),
