@@ -78,7 +78,12 @@ flutter pub add collection
 
 ```bash
 flutter pub add record path_provider
+```
 
+添加 flutter_svg
+
+```bash
+flutter pub add flutter_svg
 ```
 
 

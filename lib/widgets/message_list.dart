@@ -26,11 +26,18 @@ class ChatMessageList extends HookConsumerWidget {
     return ListView.separated(
       controller: listController,
       itemBuilder: (context, index) {
-        return MessageItem(message: messages[index]);
+        final msg = messages[index];
+        return msg.isUser
+            ? SentMessageItem(
+                message: msg,
+                backgroundColor: const Color(0xFF8FE869), // 微信绿色气泡
+              )
+            : ReceivedMessageItem(message: msg);
       },
       itemCount: messages.length,
       separatorBuilder: (context, index) => const Divider(
         height: 16,
+        color: Colors.transparent,
       ),
     );
   }

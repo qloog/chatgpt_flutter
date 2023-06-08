@@ -1,10 +1,19 @@
 import 'package:chatgpt/widgets/message_content.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../models/message.dart';
 
-class MessageItem extends StatelessWidget {
-  const MessageItem({super.key, required this.message});
+class ReceivedMessageItem extends StatelessWidget {
+  final Color backgroundColor;
+  final double radius;
+
+  const ReceivedMessageItem({
+    super.key,
+    required this.message,
+    this.backgroundColor = Colors.white,
+    this.radius = 8,
+  });
 
   final Message message;
 
@@ -15,9 +24,12 @@ class MessageItem extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         CircleAvatar(
-          backgroundColor: message.isUser ? Colors.blue : Colors.grey,
-          child: Text(
-            message.isUser ? 'A' : 'GPT',
+          backgroundColor: Colors.blue,
+          child: Container(
+            color: Colors.white,
+            child: SvgPicture.asset(
+              "assets/images/chatgpt.png",
+            ),
           ),
         ),
         const SizedBox(
@@ -25,9 +37,63 @@ class MessageItem extends StatelessWidget {
         ),
         Flexible(
           child: Container(
+            decoration: BoxDecoration(
+              color: backgroundColor,
+              borderRadius: BorderRadius.circular(radius),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
             margin: const EdgeInsets.only(right: 48),
             child: MessageContentWidget(
               message: message,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class SentMessageItem extends StatelessWidget {
+  final Color backgroundColor;
+  final double radius;
+
+  const SentMessageItem({
+    super.key,
+    required this.message,
+    this.backgroundColor = Colors.white,
+    this.radius = 8,
+  });
+
+  final Message message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Flexible(
+          child: Container(
+            decoration: BoxDecoration(
+              color: backgroundColor,
+              borderRadius: BorderRadius.circular(radius),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            margin: const EdgeInsets.only(right: 48),
+            child: MessageContentWidget(
+              message: message,
+            ),
+          ),
+        ),
+        const SizedBox(
+          width: 8,
+        ),
+        const CircleAvatar(
+          backgroundColor: Colors.blue,
+          child: Text(
+            'A',
+            style: TextStyle(
+              color: Colors.white,
             ),
           ),
         ),
