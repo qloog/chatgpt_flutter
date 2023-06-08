@@ -1,3 +1,4 @@
+import 'package:chatgpt/injection.dart';
 import 'package:chatgpt/models/message.dart';
 import 'package:openai_api/openai_api.dart';
 import 'package:chatgpt/env.dart';
@@ -41,6 +42,14 @@ class ChatGPTService {
         }
       },
     );
+  }
+
+  // audio to text
+  Future<String> speechToText(String path) async {
+    final res =
+        await client.createTrascription((TranscriptionRequest(file: path)));
+    logger.v(res);
+    return res.text;
   }
 }
 
