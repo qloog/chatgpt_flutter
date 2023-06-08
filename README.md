@@ -73,3 +73,23 @@ flutter pub add tiktoken
 ```bash
 flutter pub add collection
 ```
+
+添加 record和path_provider，用于录制音频
+
+```bash
+flutter pub add record path_provider
+
+```
+
+
+## FAQ
+
+1、编译时报错 `error: compiling for macOS 10.14, but module 'path_provider_foundation' has a minimum deployment target of macOS 10.15:`
+
+原因：`path_provider` 需要 10.15 以上系统版本
+解决方法：在 `macos/Runner/Configs/AppInfo.xcconfig` 中添加 `MACOSX_DEPLOYMENT_TARGET = 10.15`
+
+2、编译时，执行 `Running pod install...` 过程中会报错：`Exception: Error running pod install`
+
+原因：`macos/Podfile` 中的macOS版本与 `macos/Runner/Configs/AppInfo.xcconfig` 中的不符
+解决方法：修改 `macos/Podfile` 文件中的 `platform :osx, '10.14'` 为 `platform :osx, '10.15'`
