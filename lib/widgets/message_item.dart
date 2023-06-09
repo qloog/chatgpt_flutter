@@ -1,4 +1,5 @@
 import 'package:chatgpt/widgets/message_content.dart';
+import 'package:chatgpt/widgets/triangle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -34,6 +35,9 @@ class ReceivedMessageItem extends StatelessWidget {
         ),
         const SizedBox(
           width: 8,
+        ),
+        CustomPaint(
+          painter: Triangle(backgroundColor),
         ),
         Flexible(
           child: Container(
@@ -79,11 +83,14 @@ class SentMessageItem extends StatelessWidget {
               borderRadius: BorderRadius.circular(radius),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 8),
-            margin: const EdgeInsets.only(right: 48),
+            margin: const EdgeInsets.only(left: 48),
             child: MessageContentWidget(
               message: message,
             ),
           ),
+        ),
+        CustomPaint(
+          painter: Triangle(backgroundColor),
         ),
         const SizedBox(
           width: 8,
