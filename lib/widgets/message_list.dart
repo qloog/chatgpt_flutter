@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:chatgpt/states/message_state.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../states/chat_ui_state.dart';
 import 'message_item.dart';
 
 class ChatMessageList extends HookConsumerWidget {
@@ -13,6 +14,7 @@ class ChatMessageList extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final messages = ref.watch(activeSessionMessagesProvider);
+    final uiState = ref.watch(chatUiProvider);
     final listController = useScrollController();
 
     ref.listen(activeSessionMessagesProvider, (previous, next) {
@@ -32,7 +34,10 @@ class ChatMessageList extends HookConsumerWidget {
                 message: msg,
                 backgroundColor: const Color(0xFF8FE869), // 微信绿色气泡
               )
-            : ReceivedMessageItem(message: msg);
+            : ReceivedMessageItem(
+                message: msg,
+                typing: index == messages.length - 1 && uiState.requestLoading,
+              );
       },
       itemCount: messages.length,
       separatorBuilder: (context, index) => const Divider(

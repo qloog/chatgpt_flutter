@@ -8,12 +8,14 @@ import '../models/message.dart';
 class ReceivedMessageItem extends StatelessWidget {
   final Color backgroundColor;
   final double radius;
+  final bool typing;
 
   const ReceivedMessageItem({
     super.key,
     required this.message,
     this.backgroundColor = Colors.white,
     this.radius = 8,
+    this.typing = false,
   });
 
   final Message message;
@@ -49,6 +51,7 @@ class ReceivedMessageItem extends StatelessWidget {
             margin: const EdgeInsets.only(right: 48),
             child: MessageContentWidget(
               message: message,
+              typing: typing,
             ),
           ),
         ),
