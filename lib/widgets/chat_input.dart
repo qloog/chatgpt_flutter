@@ -98,32 +98,33 @@ class UserInputWidget extends HookConsumerWidget {
     return TextField(
       controller: controller,
       decoration: InputDecoration(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-          hintText: 'Type a message...', // 提示文字
-          suffixIcon: SizedBox(
-            width: 40,
-            child: uiState.requestLoading
-                ? const Center(
-                    child: SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                      ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        hintText: 'Type a message...', // 提示文字
+        suffixIcon: SizedBox(
+          width: 40,
+          child: uiState.requestLoading
+              ? const Center(
+                  child: SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
                     ),
-                  )
-                : IconButton(
-                    onPressed: () {
-                      if (controller.text.trim().isNotEmpty) {
-                        _sendMessage(ref, controller);
-                      }
-                    },
-                    icon: const Icon(Icons.send),
                   ),
-          )),
+                )
+              : IconButton(
+                  onPressed: () {
+                    if (controller.text.trim().isNotEmpty) {
+                      _sendMessage(ref, controller);
+                    }
+                  },
+                  icon: const Icon(Icons.send),
+                ),
+        ),
+      ),
     );
   }
 }
