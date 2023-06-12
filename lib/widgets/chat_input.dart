@@ -96,21 +96,34 @@ class UserInputWidget extends HookConsumerWidget {
     final controller = useTextEditingController();
 
     return TextField(
-      enabled: !uiState.requestLoading,
       controller: controller,
       decoration: InputDecoration(
-        hintText: "Type a message",
-        suffixIcon: IconButton(
-          icon: const Icon(
-            Icons.send,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.0),
           ),
-          onPressed: () {
-            if (controller.text.isNotEmpty) {
-              _sendMessage(ref, controller);
-            }
-          },
-        ),
-      ),
+          hintText: 'Type a message...', // 提示文字
+          suffixIcon: SizedBox(
+            width: 40,
+            child: uiState.requestLoading
+                ? const Center(
+                    child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                      ),
+                    ),
+                  )
+                : IconButton(
+                    onPressed: () {
+                      if (controller.text.trim().isNotEmpty) {
+                        _sendMessage(ref, controller);
+                      }
+                    },
+                    icon: const Icon(Icons.send),
+                  ),
+          )),
     );
   }
 }
