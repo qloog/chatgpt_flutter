@@ -4,12 +4,23 @@ import 'package:openai_api/openai_api.dart';
 import 'package:chatgpt/env.dart';
 import 'package:tiktoken/tiktoken.dart';
 
+import '../states/settings_state.dart';
+
 class ChatGPTService {
   final client = OpenaiClient(
     config: OpenaiConfig(
-      apiKey: Env.apiKey,
+      apiKey: '',
     ),
   );
+
+  loadConfig() async {
+    final settings = await Settings.load();
+    client.updateConfig(client.config.copyWith(
+      apiKey: settings.apiKey,
+      baseUrl: settings.baseUrl,
+      httpProxy: settings.httpProxy,
+    ));
+  }
 
   Future<ChatCompletionResponse> sendChat(String content) async {
     final request = ChatCompletionRequest(model: Model.gpt3_5Turbo, messages: [
@@ -89,5 +100,20 @@ extension on List<Message> {
         role: e.isUser ? ChatMessageRole.user : ChatMessageRole.assistant,
       ),
     ).toList();
+  }
+}
+
+// 扩展一个 copyWith 函数
+extension on OpenaiConfig {
+  OpenaiConfig copyWith({
+    String? apiKey,
+    String? baseUrl,
+    String? httpProxy,
+  }) {
+    return OpenaiConfig(
+      apiKey: apiKey ?? this.apiKey,
+      baseUrl: baseUrl ?? this.baseUrl,
+      httpProxy: httpProxy ?? this.httpProxy,
+    );
   }
 }

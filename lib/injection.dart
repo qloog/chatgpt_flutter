@@ -1,5 +1,6 @@
 import 'package:chatgpt/data/database.dart';
-import 'package:chatgpt/services/chatgpt_service.dart';
+import 'package:chatgpt/services/chatgpt.dart';
+import 'package:chatgpt/services/local_store.dart';
 import 'package:chatgpt/services/record.dart';
 import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
@@ -18,3 +19,5 @@ setupDatabase() async {
 }
 
 final recorder = RecordService();
+
+final localStorage = LocalStoreService();

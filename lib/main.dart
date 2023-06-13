@@ -10,6 +10,7 @@ import 'injection.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await setupDatabase();
+  await chatgpt.loadConfig();
 
   runApp(
     const ProviderScope(
