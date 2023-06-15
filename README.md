@@ -98,3 +98,7 @@ flutter pub add flutter_svg
 
 原因：`macos/Podfile` 中的macOS版本与 `macos/Runner/Configs/AppInfo.xcconfig` 中的不符
 解决方法：修改 `macos/Podfile` 文件中的 `platform :osx, '10.14'` 为 `platform :osx, '10.15'`
+
+## Reference
+
+- https://docs-v2.riverpod.dev/zh-Hans/
