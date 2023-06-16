@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:chatgpt/router.dart';
 import 'package:floor/floor.dart';
 import 'package:flutter/material.dart';
@@ -7,10 +9,28 @@ import 'package:chatgpt/data/database.dart';
 
 import 'injection.dart';
 
+bool isDesktop() {
+  return Platform.isLinux || Platform.isMacOS || Platform.isWindows;
+}
+
+void initWindow() {
+  if (isDesktop()) {
+    doWhenWindowReady(() {
+      const initialSize = Size(800, 600);
+      appWindow.minSize = initialSize;
+      appWindow.size = initialSize;
+      appWindow.alignment = Alignment.center;
+      appWindow.show();
+    });
+  }
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await setupDatabase();
   await chatgpt.loadConfig();
+
+  initWindow();
 
   runApp(
     const ProviderScope(

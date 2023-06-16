@@ -15,9 +15,7 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
-## Step
-
-生成代码:
+## generate code
 
 ```bash
 # --delete-conflicting-outputs 可选，会在生成代码冲突的时候，删除原来的代码，重新生成
@@ -25,6 +23,8 @@ flutter pub run build_runner build --delete-conflicting-outputs
 ```
 
 > 生成的代码基本是以 `.g.dart` 结尾的
+
+## Install pkg
 
 安装 freezed
 
@@ -84,6 +84,14 @@ flutter pub add record path_provider
 
 ```bash
 flutter pub add flutter_svg
+```
+
+安装 bitsdojo_window
+
+一个可轻松自定义和操作 Windows、macOS 和 Linux 上的 Flutter 桌面应用程序窗口的 Flutter 组件库
+
+```bash
+flutter pub add bitsdojo_window
 ```
 
 

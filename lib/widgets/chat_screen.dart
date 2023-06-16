@@ -18,52 +18,25 @@ class ChatScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final activeSession = ref.watch(activeSessionProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Chat'),
-        actions: [
-          IconButton(
-            onPressed: () {
-              GoRouter.of(context).push('/history');
+    return Container(
+      color: const Color(0xFFF1F1F1), // 灰色
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          GptModelWidget(
+            active: activeSession?.model.toModel(),
+            onModelChanged: (model) {
+              ref.read(chatUiProvider.notifier).model = model;
             },
-            icon: const Icon(Icons.history),
           ),
-          IconButton(
-            onPressed: () {
-              ref
-                  .read(sessionStateNotifierProvider.notifier)
-                  .setActiveSession(null);
-            },
-            icon: const Icon(Icons.add),
+          const Expanded(
+            // 聊天消息列表
+            child: ChatMessageList(),
           ),
-          IconButton(
-            onPressed: () {
-              GoRouter.of(context).push('/settings');
-            },
-            icon: const Icon(Icons.settings),
-          ),
-        ],
-      ),
-      body: Container(
-        color: const Color(0xFFF1F1F1), // 灰色
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            GptModelWidget(
-              active: activeSession?.model.toModel(),
-              onModelChanged: (model) {
-                ref.read(chatUiProvider.notifier).model = model;
-              },
-            ),
-            const Expanded(
-              // 聊天消息列表
-              child: ChatMessageList(),
-            ),
 
-            // 输入框
-            const ChatInputWidget(),
-          ],
-        ),
+          // 输入框
+          const ChatInputWidget(),
+        ],
       ),
     );
   }
